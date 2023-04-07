@@ -42,29 +42,12 @@ repository:
 baseurl: "/optimization" #@@@ CHANGE THIS -5 @@@#
 
 # General interact settings
-use_jupyterlab                   : false  # If 'true', interact links will use JupyterLab as the interface
+use_jupyterlab                   : true  # If 'true', interact links will use JupyterLab as the interface
 
 # Jupyterhub link settings
 use_jupyterhub_button            : false  # If 'true', display a button that will direct users to a JupyterHub (that you provide)
 jupyterhub_url                   : ""  # The URL for your JupyterHub. If no URL, use ""
 jupyterhub_interact_text         : "Interact"  # The text that interact buttons will contain.
-
-# Binder link settings
-use_binder_button                : true  # If 'true', add a binder button for interactive links
-binderhub_url                    : https://mybinder.org  # The URL for your BinderHub. If no URL, use ""
-
-
-binder_repo_base                 : https://github.com/lcag93/optimization  #@@@ CHANGE THIS @@@  -8 # # The site on which the textbook repository is hosted
-binder_repo_org                  : my-first-jupyter-book  #@@@ CHANGE THIS @@@ - 9# # Your GitHub username
-
-binder_repo_name                 : optimization  # The project repo name
-binder_repo_branch               : master  # The branch on which your textbook is hosted.
-binderhub_interact_text          : "Interact via Binder"  # The text that interact buttons will contain.
-
-# Thebelab settings
-use_thebelab_button              : true  # If 'true', display a button to allow in-page running code cells with Thebelab
-thebelab_button_text             : "Thebelab"  # The text to display inside the Thebelab initialization button
-codemirror_theme                 : "abcdef"  # Theme for codemirror cells, for options see https://codemirror.net/doc/manual.html#config
 
 # nbinteract settings
 use_show_widgets_button              : true  # If 'true', display a button to allow in-page running code cells with nbinteract
@@ -81,6 +64,24 @@ launch_buttons:
   jupyterhub_url            : ""  # The URL of the JupyterHub (e.g., https://datahub.berkeley.edu)
   thebe                     : true  # Add a thebe button to pages (ONLY ON GITHUB)
   colab_url                 : "" # The URL of Google Colab (https://colab.research.google.com)
+
+# Thebelab settings
+use_thebelab_button              : true  # If 'true', display a button to allow in-page running code cells with Thebelab
+thebelab_button_text             : "Thebelab"  # The text to display inside the Thebelab initialization button
+codemirror_theme                 : "abcdef"  # Theme for codemirror cells, for options see https://codemirror.net/doc/manual.html#config
+
+# Binder link settings
+use_binder_button                : true  # If 'true', add a binder button for interactive links
+binderhub_url                    : https://mybinder.org  # The URL for your BinderHub. If no URL, use ""
+
+
+binder_repo_base                 : https://github.com/lcag93/optimization  #@@@ CHANGE THIS @@@  -8 # # The site on which the textbook repository is hosted
+binder_repo_org                  : lcag93  #@@@ CHANGE THIS @@@ - 9# # Your GitHub username
+
+binder_repo_name                 : optimization  # The project repo name
+binder_repo_branch               : master  # The branch on which your textbook is hosted.
+binderhub_interact_text          : "Interact via Binder"  # The text that interact buttons will contain.
+
 
 sphinx:
   config:
