@@ -74,16 +74,7 @@ use_download_button              : true  # If 'true', display a button to downlo
 download_button_text             : "Download" # The text that download buttons will contain
 download_page_header             : "Made with Jupyter Book" # A header that will be displayed at the top of and PDF-printed page
 
-#launch_buttons:
-  #notebook_interface: jupyterlab  # or "classic"
-  #use_binder_button: true 
- # binderhub_url: https://mybinder.org/v2/gl/geoocean%2Fcourses%2Foptimization/main
-#  binder_repo_base: "https://gitlab.com/"
-  #binder_repo_org: "geoocean"
-  #binder_repo_name: "courses/optimization"
-  #binder_repo_branch: "main"
-  #thebe: true
-  
+
 launch_buttons:
   notebook_interface        : jupyterlab  # The interface interactive links will activate ["classic", "jupyterlab"]
   binderhub_url             : https://mybinder.org  # The URL of the BinderHub (e.g., https://mybinder.org)
