@@ -1,0 +1,1312 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Reconstruction: RBF &#8212; Optimization</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/T6_metamodels/02b_Reconstruction_RBF';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Reconstruction - Analogues" href="02a_Reconstruction_Analogues.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../book/intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../book/intro.html">
+                    M2248 - Optimization in Civil Engineering
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">T2. Linear Programming</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T2_linear_programming/01_linear_programming.html">Linear Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T2_linear_programming/02_transportation_problem.html">Transportation problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T2_linear_programming/03a_Simplex_Method.html">SIMPLEX Method - Ex1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T2_linear_programming/03b_Simplex_Method.html">SIMPLEX Method - Ex2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T2_linear_programming/04_String_beam_system.html">String and beam system</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T3.  Mized Integeer Linear Programming</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T3_mixed_integer_linear_programming/01_Knapsack_Problem.html">The Knapsack problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T3_mixed_integer_linear_programming/02_The_travelling_salesman_problem.html">The Travelling Salesman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T4. Nonlinear Programming</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/01_Sand_Transport.html">Sand Transport</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/02_Postal_package.html">Postal Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/03_String_beam_system_Linear.html">String and beam system - Linear</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/03_String_beam_system_NonLinear.html">String and beam system - NonLinear</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T5. Heuristic Optimization</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T5_heuristic_optimization/SCE_Scipy_Example.html">Heuristic optimization</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T6. Metamodels</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01a_Selection_MDA.html">Selection: MDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01b_LHS_MDA.html">Sampling LHS + Selection MDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01c_Clustering_KMeans.html">Clustering - KMeans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02a_Reconstruction_Analogues.html">Reconstruction - Analogues</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Reconstruction: RBF</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/git/https%3A//gitlab.com/geoocean/courses/optimization/main?urlpath=lab/tree/notebooks/T6_metamodels/02b_Reconstruction_RBF.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onBinder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+<a href="https://gitlab.com/geoocean/courses/optimization" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-gitlab"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/T6_metamodels/02b_Reconstruction_RBF.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Reconstruction: RBF</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mexican-hat">Mexican Hat</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-number-of-clusters">Optimal Number of Clusters</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">RBFInterpolator</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section class="tex2jax_ignore mathjax_ignore" id="reconstruction-rbf">
+<h1>Reconstruction: RBF<a class="headerlink" href="#reconstruction-rbf" title="Permalink to this heading">#</a></h1>
+<p>Radial Basis Function</p>
+<p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.RBFInterpolator.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.RBFInterpolator.html</a></p>
+<div class="math notranslate nohighlight">
+\[\textbf{Model: } z = x^2 + y^2\]</div>
+<p>First, we create a matrix for x and y, and apply the model above to obtain z</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_disc</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1">#Discretizations in x and y axis</span>
+<span class="n">xp</span><span class="p">,</span> <span class="n">yp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">n_disc</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">n_disc</span><span class="p">))</span> <span class="c1">#Matrix</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">yp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#Vectors</span>
+<span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#Vector</span>
+<span class="n">zp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xp</span><span class="p">))</span> <span class="c1">#Matrix</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Select a Random number of x, y and z values</p></li>
+</ul>
+<ul class="simple">
+<li><p>First we are going to make a test with a reduced number of values</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_random</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1">#Number of random values to choosse</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">random_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">n_random</span><span class="p">)</span>
+<span class="n">xi</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+<span class="n">yi</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+<span class="n">zi</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span><span class="n">yp</span><span class="p">,</span><span class="n">zp</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Model Surface&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">zp</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="c1">#ax1.scatter(x,y,z, s=3, c=&#39;grey&#39;, alpha=.1, cmap = &#39;rainbow&#39;)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Selected Points for RBF&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.92, &#39;Selected Points for RBF&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/29cff1a8bffa9c4091e796dc7abd1301ec652303b04a04ea921345b3dc890aa9.png" src="../../_images/29cff1a8bffa9c4091e796dc7abd1301ec652303b04a04ea921345b3dc890aa9.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>2D Plot of surface and selected points</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">z</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> 
+                 <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">)</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;Y&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/3993cf25add909620f55c473b05c8f287369547243b7d80b5d94a03b1215d45f.png" src="../../_images/3993cf25add909620f55c473b05c8f287369547243b7d80b5d94a03b1215d45f.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>Once we have selected the points, we fit the RBF function</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rbf_func</span> <span class="o">=</span> <span class="n">RBFInterpolator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">zi</span><span class="p">)</span>  <span class="c1"># radial basis function interpolator instance</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>With the RBF function (rbf_func) we obtain the results for all the combinations of x and y</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">rbf_func</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Once we have obtained the results we can plot the resulting surface</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xp</span><span class="p">)),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span>
+                <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;RBF resulting surface&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.92, &#39;RBF resulting surface&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/6e833f3d4e124c81d29b44b824bb9cb5dd41ae3a3434fa72ce7dcff116106acd.png" src="../../_images/6e833f3d4e124c81d29b44b824bb9cb5dd41ae3a3434fa72ce7dcff116106acd.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>We can also plot the errors over the surface</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">results</span><span class="p">,</span>  <span class="n">c</span><span class="o">=</span><span class="n">results</span><span class="o">-</span><span class="n">z</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">zp</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="c1">#ax1.scatter(x,y,results, s=3, c=&#39;grey&#39;, alpha=.1, cmap = &#39;RdBu_r&#39;)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">],</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span><span class="o">-</span><span class="n">zi</span><span class="p">,</span> 
+            <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mf">.2</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;Z&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/a29b2c936e1e28c18ef7e5f1079b4bd01b56034b76b3a585280c75e3b0619122.png" src="../../_images/a29b2c936e1e28c18ef7e5f1079b4bd01b56034b76b3a585280c75e3b0619122.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>2D Plots</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax0</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">results</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax0</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax0</span><span class="p">)</span>
+<span class="n">ax0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;RBF surface and points&#39;</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">results</span><span class="o">-</span><span class="n">z</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span><span class="o">-</span><span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax1</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Errors [RBF - Model]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Errors [RBF - Model]&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/f6a5a22f18b513eec544e948a94cad5aa42205f32a50128366674cd01f782447.png" src="../../_images/f6a5a22f18b513eec544e948a94cad5aa42205f32a50128366674cd01f782447.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>Now, we choose a larger number of values</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_random</span> <span class="o">=</span> <span class="mi">30</span> <span class="c1">#Number of random values to choosse</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">random_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">n_random</span><span class="p">)</span>
+<span class="n">xi</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+<span class="n">yi</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+<span class="n">zi</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span><span class="n">yp</span><span class="p">,</span><span class="n">zp</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Model Surface&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">zp</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="c1">#ax1.scatter(x,y,z, s=3, c=&#39;grey&#39;, alpha=.1, cmap = &#39;rainbow&#39;)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Selected Points for RBF&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.92, &#39;Selected Points for RBF&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/fbd4391a05aece22b824fd171c4a4b52a607c68890cfd1b31cba638b32469895.png" src="../../_images/fbd4391a05aece22b824fd171c4a4b52a607c68890cfd1b31cba638b32469895.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>2D Plot of surface and selected points</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">z</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> 
+                 <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">)</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;Y&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/be77b5d407b97a79218018ee5d4c755ee5017bce4341dd16f3a34edcee532ab6.png" src="../../_images/be77b5d407b97a79218018ee5d4c755ee5017bce4341dd16f3a34edcee532ab6.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>Once we have selected the points, we fit the RBF function</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rbf_func</span> <span class="o">=</span> <span class="n">RBFInterpolator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">zi</span><span class="p">)</span>  <span class="c1"># radial basis function interpolator instance</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>With the RBF function (rbf_func) we obtain the results for all the combinations of x and y</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">rbf_func</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Once we have obtained the results we can plot the resulting surface</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xp</span><span class="p">)),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span>
+                <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;RBF resulting surface&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.92, &#39;RBF resulting surface&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/0106078ec9b8c3a1e21553cf64ed37137e50f8b6caefcb6f075b753596d5fe96.png" src="../../_images/0106078ec9b8c3a1e21553cf64ed37137e50f8b6caefcb6f075b753596d5fe96.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>We can also plot the errors over the surface</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">results</span><span class="p">,</span>  <span class="n">c</span><span class="o">=</span><span class="n">results</span><span class="o">-</span><span class="n">z</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">zp</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="c1">#ax1.scatter(x,y,results, s=3, c=&#39;grey&#39;, alpha=.1, cmap = &#39;RdBu_r&#39;)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">],</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span><span class="o">-</span><span class="n">zi</span><span class="p">,</span> 
+            <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mf">.2</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;Z&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/97f86c3d947274839840d751d1320c18369ed9f73518fcdb04a11cfaca4b93a7.png" src="../../_images/97f86c3d947274839840d751d1320c18369ed9f73518fcdb04a11cfaca4b93a7.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>2D Plots</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax0</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">results</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax0</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax0</span><span class="p">)</span>
+<span class="n">ax0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;RBF surface and points&#39;</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">results</span><span class="o">-</span><span class="n">z</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span><span class="o">-</span><span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax1</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Errors [RBF - Model]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Errors [RBF - Model]&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/5b914d476a9622a7c144ffaa382dea0044d7ff2f4a9663683227917d350ec2b5.png" src="../../_images/5b914d476a9622a7c144ffaa382dea0044d7ff2f4a9663683227917d350ec2b5.png" />
+</div>
+</div>
+<section id="mexican-hat">
+<h2>Mexican Hat<a class="headerlink" href="#mexican-hat" title="Permalink to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[\textbf{Model: } z = sin(sqrt(x^2 + y^2)) / sqrt((x^2 + y^2))\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_disc</span> <span class="o">=</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="n">n_disc</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="n">n_disc</span><span class="p">))</span> <span class="c1">#matrix</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">yp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#vectors</span>
+<span class="n">rmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span> <span class="p">(</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> 
+<span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span> <span class="p">(</span> <span class="n">rmat</span> <span class="p">)</span> <span class="o">/</span> <span class="n">rmat</span> <span class="c1">#vector</span>
+<span class="n">zp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xp</span><span class="p">))</span> <span class="c1">#matrix</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Select a Random number of values</p></li>
+</ul>
+<ul class="simple">
+<li><p>First we are going to make a test with a reduced number of values</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_random</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1">#Number of random values to choosse</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">random_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">n_random</span><span class="p">)</span>
+<span class="n">xi</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+<span class="n">yi</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+<span class="n">zi</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span><span class="n">yp</span><span class="p">,</span><span class="n">zp</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Model Surface&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">zp</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="c1">#ax1.scatter(x,y,z, s=3, c=&#39;grey&#39;, alpha=.1, cmap = &#39;rainbow&#39;)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Selected Points for RBF&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.92, &#39;Selected Points for RBF&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/2c3925d548dfe2a79b840e5cb18f6d2b885080733c86b5ba397ff97fe1015efb.png" src="../../_images/2c3925d548dfe2a79b840e5cb18f6d2b885080733c86b5ba397ff97fe1015efb.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>2D Plot of surface and selected points</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">z</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> 
+                 <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">)</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;Y&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/87293cfb541441cdf00055a38098938e27669c3f5bceed8241bb5be06c41c80b.png" src="../../_images/87293cfb541441cdf00055a38098938e27669c3f5bceed8241bb5be06c41c80b.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>Once we have selected the points, we fit the RBF function</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rbf_func</span> <span class="o">=</span> <span class="n">RBFInterpolator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">zi</span><span class="p">)</span>  <span class="c1"># radial basis function interpolator instance</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>With the RBF function (rbf_func) we obtain the results for all the combinations of x and y</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">rbf_func</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Once we have obtained the results we can plot the resulting surface</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xp</span><span class="p">)),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span>
+                <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;RBF resulting surface&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.92, &#39;RBF resulting surface&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/d4becc5bcfc028ec928956976325726f26f85cb519b0acdaa8a7e60fcf6d706f.png" src="../../_images/d4becc5bcfc028ec928956976325726f26f85cb519b0acdaa8a7e60fcf6d706f.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>We can also plot the errors over the surface</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">results</span><span class="p">,</span>  <span class="n">c</span><span class="o">=</span><span class="n">results</span><span class="o">-</span><span class="n">z</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">zp</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="c1">#ax1.scatter(x,y,results, s=3, c=&#39;grey&#39;, alpha=.1, cmap = &#39;RdBu_r&#39;)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">],</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span><span class="o">-</span><span class="n">zi</span><span class="p">,</span> 
+            <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mf">.2</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;Z&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/057e3af3d3d06423b7348c3f7dde672b40182716df1f65f42c3fd8571e2d44b0.png" src="../../_images/057e3af3d3d06423b7348c3f7dde672b40182716df1f65f42c3fd8571e2d44b0.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>2D Plots</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax0</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">results</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax0</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax0</span><span class="p">)</span>
+<span class="n">ax0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;RBF surface and points&#39;</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">results</span><span class="o">-</span><span class="n">z</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span><span class="o">-</span><span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax1</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Errors [RBF - Model]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Errors [RBF - Model]&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/fdb7b3d8d09e4d524c9e62573d207d6a5a4578b2a1994a50765f50dae81a536a.png" src="../../_images/fdb7b3d8d09e4d524c9e62573d207d6a5a4578b2a1994a50765f50dae81a536a.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>First we are going to make a test with a larger number of values</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_random</span> <span class="o">=</span> <span class="mi">200</span> <span class="c1">#Number of random values to choosse</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">random_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">n_random</span><span class="p">)</span>
+<span class="n">xi</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+<span class="n">yi</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+<span class="n">zi</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span><span class="n">yp</span><span class="p">,</span><span class="n">zp</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Model Surface&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">zp</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="c1">#ax1.scatter(x,y,z, s=3, c=&#39;grey&#39;, alpha=.1, cmap = &#39;rainbow&#39;)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">zi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Selected Points for RBF&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.92, &#39;Selected Points for RBF&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/aac46e02170f5e35b089e04f2cacadeddcd19487be5368cfa31fccf0e782a728.png" src="../../_images/aac46e02170f5e35b089e04f2cacadeddcd19487be5368cfa31fccf0e782a728.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>2D Plot of surface and selected points</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">z</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> 
+                 <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">)</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;Y&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/96359d01ec7341cc57770c8ddc9ee51ae512f2150c353cc98f3b05314e60f540.png" src="../../_images/96359d01ec7341cc57770c8ddc9ee51ae512f2150c353cc98f3b05314e60f540.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>Once we have selected the points, we fit the RBF function</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rbf_func</span> <span class="o">=</span> <span class="n">RBFInterpolator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">zi</span><span class="p">)</span>  <span class="c1"># radial basis function interpolator instance</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>With the RBF function (rbf_func) we obtain the results for all the combinations of x and y</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">rbf_func</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Once we have obtained the results we can plot the resulting surface</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">xp</span><span class="p">)),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span>
+                <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;RBF resulting surface&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0.92, &#39;RBF resulting surface&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/a3dd31cda66dc8ba878eb803143a6819a7094318b9aa1fe44d90f3e13ba1b6e5.png" src="../../_images/a3dd31cda66dc8ba878eb803143a6819a7094318b9aa1fe44d90f3e13ba1b6e5.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>We can also plot the errors over the surface</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">results</span><span class="p">,</span>  <span class="n">c</span><span class="o">=</span><span class="n">results</span><span class="o">-</span><span class="n">z</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">yp</span><span class="p">,</span> <span class="n">zp</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="c1">#ax1.scatter(x,y,results, s=3, c=&#39;grey&#39;, alpha=.1, cmap = &#39;RdBu_r&#39;)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">],</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span><span class="o">-</span><span class="n">zi</span><span class="p">,</span> 
+            <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mf">.2</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;Z&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/d8a26ab631fe012692a3c57d7c37f5895c92609acd8905e7fc74b74c6758119d.png" src="../../_images/d8a26ab631fe012692a3c57d7c37f5895c92609acd8905e7fc74b74c6758119d.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>2D Plots</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax0</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">results</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax0</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;rainbow&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax0</span><span class="p">)</span>
+<span class="n">ax0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;RBF surface and points&#39;</span><span class="p">)</span>
+
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">results</span><span class="o">-</span><span class="n">z</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span><span class="o">-</span><span class="n">zi</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mf">.2</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;RdBu_r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax1</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Errors [RBF - Model]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Errors [RBF - Model]&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/ff7e76d83dc120c4fd58563e1c25ffc5ee526d637728a59d26dee04108b94be4.png" src="../../_images/ff7e76d83dc120c4fd58563e1c25ffc5ee526d637728a59d26dee04108b94be4.png" />
+</div>
+</div>
+</section>
+<section id="optimal-number-of-clusters">
+<h2>Optimal Number of Clusters<a class="headerlink" href="#optimal-number-of-clusters" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">random</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+<span class="n">random</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 10,  18,  26,  34,  43,  51,  59,  67,  76,  84,  92, 101, 109,
+       117, 125, 134, 142, 150, 158, 167, 175, 183, 192, 200, 208, 216,
+       225, 233, 241, 250])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">random</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">random</span><span class="p">)</span>
+<span class="n">RMSE</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">n_random</span> <span class="ow">in</span> <span class="n">random</span><span class="p">:</span>
+    
+    <span class="n">random_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">n_random</span><span class="p">)</span>
+    <span class="n">xi</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+    <span class="n">yi</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+    <span class="n">zi</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">random_i</span><span class="p">]</span>
+    <span class="n">rbf_func</span> <span class="o">=</span> <span class="n">RBFInterpolator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">zi</span><span class="p">)</span>  <span class="c1"># radial basis function interpolator instance</span>
+    
+    <span class="n">results</span> <span class="o">=</span> <span class="n">rbf_func</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    
+    <span class="n">RMSE</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">results</span><span class="o">-</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span>
+    
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[ 10  18  26  34  43  51  59  67  76  84  92 101 109 117 125 134 142 150
+ 158 167 175 183 192 200 208 216 225 233 241 250]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">random</span><span class="p">,</span> <span class="n">RMSE</span><span class="p">,</span> <span class="s1">&#39;.-&#39;</span> <span class="p">,</span><span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;crimson&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Number of Random Values&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;RMSE&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0, 0.5, &#39;RMSE&#39;)
+</pre></div>
+</div>
+<img alt="../../_images/6105ae12389d8f238d4ce6df9855aca2df1de40f586b8d015d59fbcf09d1f231.png" src="../../_images/6105ae12389d8f238d4ce6df9855aca2df1de40f586b8d015d59fbcf09d1f231.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/T6_metamodels"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="02a_Reconstruction_Analogues.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Reconstruction - Analogues</p>
+      </div>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mexican-hat">Mexican Hat</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-number-of-clusters">Optimal Number of Clusters</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By GeoOcean Group, Universidad de Cantabria
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

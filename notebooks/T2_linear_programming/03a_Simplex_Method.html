@@ -1,0 +1,1057 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>SIMPLEX Method - Ex1 &#8212; Optimization</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/T2_linear_programming/03a_Simplex_Method';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="SIMPLEX Method - Ex2" href="03b_Simplex_Method.html" />
+    <link rel="prev" title="Transportation problem" href="02_transportation_problem.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../book/intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../book/intro.html">
+                    M2248 - Optimization in Civil Engineering
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">T2. Linear Programming</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01_linear_programming.html">Linear Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_transportation_problem.html">Transportation problem</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">SIMPLEX Method - Ex1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03b_Simplex_Method.html">SIMPLEX Method - Ex2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_String_beam_system.html">String and beam system</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T3.  Mized Integeer Linear Programming</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T3_mixed_integer_linear_programming/01_Knapsack_Problem.html">The Knapsack problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T3_mixed_integer_linear_programming/02_The_travelling_salesman_problem.html">The Travelling Salesman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T4. Nonlinear Programming</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/01_Sand_Transport.html">Sand Transport</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/02_Postal_package.html">Postal Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/03_String_beam_system_Linear.html">String and beam system - Linear</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/03_String_beam_system_NonLinear.html">String and beam system - NonLinear</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T5. Heuristic Optimization</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T5_heuristic_optimization/SCE_Scipy_Example.html">Heuristic optimization</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T6. Metamodels</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T6_metamodels/01a_Selection_MDA.html">Selection: MDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T6_metamodels/01b_LHS_MDA.html">Sampling LHS + Selection MDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T6_metamodels/01c_Clustering_KMeans.html">Clustering - KMeans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T6_metamodels/02a_Reconstruction_Analogues.html">Reconstruction - Analogues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T6_metamodels/02b_Reconstruction_RBF.html">Reconstruction: RBF</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/git/https%3A//gitlab.com/geoocean/courses/optimization/main?urlpath=lab/tree/notebooks/T2_linear_programming/03a_Simplex_Method.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onBinder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+<a href="https://gitlab.com/geoocean/courses/optimization" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-gitlab"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/T2_linear_programming/03a_Simplex_Method.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>SIMPLEX Method - Ex1</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standarized-form">1) Standarized Form</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#determine-slack-variables">2) Determine slack variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-tableau">3) Setting up the Tableau</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-optimality">4) Check Optimality</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#identify-pivot-variable">5) Identify Pivot Variable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-new-tableau">6) Create new Tableau</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">4) Check Optimality</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repeat-5-identify-pivot-variable">repeat 5) Identify Pivot Variable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repeat-6-create-new-tableau">repeat 6) Create new Tableau</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repeat-4-check-optimality">repeat 4) Check Optimality</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">simplex_method_geocean</span> <span class="kn">import</span> <span class="n">Get_New_Tableau</span><span class="p">,</span> <span class="n">Check_Optimal</span><span class="p">,</span> <span class="n">Get_Optimal_Result</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section class="tex2jax_ignore mathjax_ignore" id="simplex-method-ex1">
+<h1>SIMPLEX Method - Ex1<a class="headerlink" href="#simplex-method-ex1" title="Permalink to this heading">#</a></h1>
+<p>The <strong>Simplex</strong> method is an approach to solving linear programming by hand using slack variables, tableaus and pivot variables as a means to finding the optimal solution.</p>
+<p><strong>Minimize:</strong></p>
+<div class="math notranslate nohighlight">
+\[ -Z = - 8X_1 - 10X_2 -7X_3\]</div>
+<p><strong>Subject to:</strong></p>
+<div class="math notranslate nohighlight">
+\[X_1 + 3X_2 + 2X_3\leq 10\]</div>
+<div class="math notranslate nohighlight">
+\[- X_1 - 5X_2 - X_3 \geq 8\]</div>
+<div class="math notranslate nohighlight">
+\[ X_1, X_2, X_3 \geq 0\]</div>
+<section id="standarized-form">
+<h2>1) Standarized Form<a class="headerlink" href="#standarized-form" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Turn into a maximization problem</p></li>
+<li><p>All construaints must be <span class="math notranslate nohighlight">\(\leq\)</span> or =</p></li>
+<li><p>All varibles should be <span class="math notranslate nohighlight">\(\geq\)</span> 0</p></li>
+</ul>
+<p><strong>Maximize:</strong></p>
+<div class="math notranslate nohighlight">
+\[ Z = 8X_1 + 10X_2 + 7X_3\]</div>
+<p><strong>Subject to:</strong></p>
+<div class="math notranslate nohighlight">
+\[X_1 + 3X_2 + 2X_3\leq 10\]</div>
+<div class="math notranslate nohighlight">
+\[ X_1 + 5X_2 + X_3 \leq 8\]</div>
+<div class="math notranslate nohighlight">
+\[ X_1, X_2, X_3 \geq 0\]</div>
+</section>
+<section id="determine-slack-variables">
+<h2>2) Determine slack variables<a class="headerlink" href="#determine-slack-variables" title="Permalink to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[X_1 + 3X_2 + 2X_3 + S_1 \leq 10\]</div>
+<div class="math notranslate nohighlight">
+\[ X_1 + 5X_2 + X_3 + S_2 \leq 8\]</div>
+</section>
+<section id="setting-up-the-tableau">
+<h2>3) Setting up the Tableau<a class="headerlink" href="#setting-up-the-tableau" title="Permalink to this heading">#</a></h2>
+<p>Columns are:</p>
+<div class="math notranslate nohighlight">
+\[[X_1, X_2, X_3, S_1, S_2, Z, b]\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tableau</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+           <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+           <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+           <span class="p">[</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+          <span class="p">],</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;X1&#39;</span><span class="p">,</span> <span class="s1">&#39;X2&#39;</span><span class="p">,</span> <span class="s1">&#39;X3&#39;</span><span class="p">,</span> <span class="s1">&#39;S1&#39;</span><span class="p">,</span> <span class="s1">&#39;S2&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">])</span>
+<span class="n">tableau</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>X1</th>
+      <th>X2</th>
+      <th>X3</th>
+      <th>S1</th>
+      <th>S2</th>
+      <th>Z</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>3</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>5</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-8</td>
+      <td>-10</td>
+      <td>-7</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="check-optimality">
+<h2>4) Check Optimality<a class="headerlink" href="#check-optimality" title="Permalink to this heading">#</a></h2>
+<p>For a solution to be optimal, all elements in the last row must be <span class="math notranslate nohighlight">\(\geq 0\)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Check_Optimal</span><span class="p">(</span><span class="n">tableau</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Last Row is: [ -8 -10  -7   0   0   1   0]
+Optimal solution NOT found
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="identify-pivot-variable">
+<h2>5) Identify Pivot Variable<a class="headerlink" href="#identify-pivot-variable" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pivot_column</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">tableau</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:])</span> <span class="c1"># Select pivot column</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Pivot Column is : &#39;</span> <span class="o">+</span>  <span class="n">tableau</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="n">pivot_column</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Pivot Column is : X2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tableau</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>X1</th>
+      <th>X2</th>
+      <th>X3</th>
+      <th>S1</th>
+      <th>S2</th>
+      <th>Z</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>3</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>5</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-8</td>
+      <td>-10</td>
+      <td>-7</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">b_index</span> <span class="o">=</span> <span class="n">tableau</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">tableau</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">pivot_column</span><span class="p">]</span>  <span class="c1"># Divide b by pivot column</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b_index</span><span class="p">)</span>
+
+<span class="n">b_mod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">b_index</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">row_piv_var</span> <span class="o">=</span> <span class="n">b_mod</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">b_index</span><span class="p">[</span><span class="n">b_mod</span><span class="p">])]</span> <span class="c1">#Row pivot variable</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;From the </span><span class="si">{0}</span><span class="s1"> column, the pivot variable is in row </span><span class="si">{1}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tableau</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="n">pivot_column</span><span class="p">],</span> <span class="n">row_piv_var</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0    3.333333
+1    1.600000
+dtype: float64
+From the X2 column, the pivot variable is in row 1 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="create-new-tableau">
+<h2>6) Create new Tableau<a class="headerlink" href="#create-new-tableau" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The Pivot variable will be transformed into 1</p></li>
+<li><p>All the other variables in the pivot column will be 0</p></li>
+<li><p>Each new value from the new tableau will be computed as:</p></li>
+</ul>
+<p><strong>New Table Value</strong> = <em><strong>Negative Value in old Tableau Pivot Column</strong></em> * <em><strong>value in new tableau pivot row</strong></em> + <em><strong>old tableau value</strong></em></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_tableau</span> <span class="o">=</span> <span class="n">Get_New_Tableau</span><span class="p">(</span><span class="n">tableau</span><span class="p">,</span> <span class="n">pivot_column</span><span class="p">,</span> <span class="n">row_piv_var</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Old Tableau
+    X1  X2  X3  S1  S2  Z   b
+0   1   3   2   1   0  0  10
+1   1   5   1   0   1  0   8
+2  -8 -10  -7   0   0  1   0
+
+New Tableau
+     X1  X2   X3  S1   S2  Z     b
+0  0.4   0  1.4   1 -0.6  0   5.2
+1  0.2   1  0.2   0  0.2  0   1.6
+2 -6.0   0 -5.0   0  2.0  1  16.0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id1">
+<h2>4) Check Optimality<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+<p>For a solution to be optimal, all elements in the last row must be <span class="math notranslate nohighlight">\(\geq 0\)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tableau</span> <span class="o">=</span> <span class="n">new_tableau</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Check_Optimal</span><span class="p">(</span><span class="n">tableau</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Last Row is: [-6.  0. -5.  0.  2.  1. 16.]
+Optimal solution NOT found
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="repeat-5-identify-pivot-variable">
+<h2>repeat 5) Identify Pivot Variable<a class="headerlink" href="#repeat-5-identify-pivot-variable" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pivot_column</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">tableau</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:])</span> <span class="c1"># Select pivot column</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Pivot Column is : &#39;</span> <span class="o">+</span>  <span class="n">tableau</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="n">pivot_column</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Pivot Column is : X1
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tableau</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>X1</th>
+      <th>X2</th>
+      <th>X3</th>
+      <th>S1</th>
+      <th>S2</th>
+      <th>Z</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.4</td>
+      <td>0</td>
+      <td>1.4</td>
+      <td>1</td>
+      <td>-0.6</td>
+      <td>0</td>
+      <td>5.2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.2</td>
+      <td>1</td>
+      <td>0.2</td>
+      <td>0</td>
+      <td>0.2</td>
+      <td>0</td>
+      <td>1.6</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-6.0</td>
+      <td>0</td>
+      <td>-5.0</td>
+      <td>0</td>
+      <td>2.0</td>
+      <td>1</td>
+      <td>16.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">b_index</span> <span class="o">=</span> <span class="n">tableau</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">tableau</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">pivot_column</span><span class="p">]</span>  <span class="c1"># Divide b by pivot column</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b_index</span><span class="p">)</span>
+
+<span class="n">b_mod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">b_index</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">row_piv_var</span> <span class="o">=</span> <span class="n">b_mod</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">b_index</span><span class="p">[</span><span class="n">b_mod</span><span class="p">])]</span> <span class="c1">#Row pivot variable</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;From the </span><span class="si">{0}</span><span class="s1"> column, the pivot variable is in row </span><span class="si">{1}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tableau</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="n">pivot_column</span><span class="p">],</span> <span class="n">row_piv_var</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0    13.0
+1     8.0
+dtype: float64
+From the X1 column, the pivot variable is in row 1 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="repeat-6-create-new-tableau">
+<h2>repeat 6) Create new Tableau<a class="headerlink" href="#repeat-6-create-new-tableau" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_tableau</span> <span class="o">=</span> <span class="n">Get_New_Tableau</span><span class="p">(</span><span class="n">tableau</span><span class="p">,</span> <span class="n">pivot_column</span><span class="p">,</span> <span class="n">row_piv_var</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Old Tableau
+     X1  X2   X3  S1   S2  Z     b
+0  0.4   0  1.4   1 -0.6  0   5.2
+1  0.2   1  0.2   0  0.2  0   1.6
+2 -6.0   0 -5.0   0  2.0  1  16.0
+
+New Tableau
+    X1    X2   X3  S1   S2  Z     b
+0   0  -2.0  1.0   1 -1.0  0   2.0
+1   1   5.0  1.0   0  1.0  0   8.0
+2   0  30.0  1.0   0  8.0  1  64.0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="repeat-4-check-optimality">
+<h2>repeat 4) Check Optimality<a class="headerlink" href="#repeat-4-check-optimality" title="Permalink to this heading">#</a></h2>
+<p>For a solution to be optimal, all elements in the last row must be <span class="math notranslate nohighlight">\(\geq 0\)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tableau</span> <span class="o">=</span> <span class="n">new_tableau</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Check_Optimal</span><span class="p">(</span><span class="n">tableau</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Last Row is: [ 0. 30.  1.  0.  8.  1. 64.]
+Optimal solution found
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimal_solution</span> <span class="o">=</span> <span class="n">Get_Optimal_Result</span><span class="p">(</span><span class="n">tableau</span><span class="p">)</span>
+
+<span class="n">optimal_solution</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Optimal solution found
+Basic Variables: [&#39;X1&#39;, &#39;S1&#39;, &#39;Z&#39;]
+Non Basic Variables: [&#39;X2&#39;, &#39;X3&#39;, &#39;S2&#39;, &#39;b&#39;]
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>X1</th>
+      <th>X2</th>
+      <th>X3</th>
+      <th>S1</th>
+      <th>S2</th>
+      <th>Z</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>8.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>2.0</td>
+      <td>0</td>
+      <td>64.0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/T2_linear_programming"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="02_transportation_problem.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Transportation problem</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="03b_Simplex_Method.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">SIMPLEX Method - Ex2</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standarized-form">1) Standarized Form</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#determine-slack-variables">2) Determine slack variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-tableau">3) Setting up the Tableau</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-optimality">4) Check Optimality</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#identify-pivot-variable">5) Identify Pivot Variable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-new-tableau">6) Create new Tableau</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">4) Check Optimality</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repeat-5-identify-pivot-variable">repeat 5) Identify Pivot Variable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repeat-6-create-new-tableau">repeat 6) Create new Tableau</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repeat-4-check-optimality">repeat 4) Check Optimality</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By GeoOcean Group, Universidad de Cantabria
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
