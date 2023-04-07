@@ -1,0 +1,13 @@
+name: optimization
+channels:
+  - defaults
+dependencies:
+  - python==3.8
+  - jupyterlab
+  - matplotlib
+  - scipy
+  - xarray
+  - pip:
+    - mip
+    - cffi
+prefix: /Users/laurac/opt/anaconda3/envs/optimization

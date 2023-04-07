@@ -1,0 +1,62 @@
+# Book settings
+# Learn more at https://jupyterbook.org/customize/config.html
+
+title: Optimization
+author: GeoOcean Group, Universidad de Cantabria
+logo: book/logo.png
+
+only_build_toc_files: True  # exclude all files not in toc
+
+execute:
+  execute_notebooks: 'off' 
+
+# Define the name of the latex output file for PDF builds
+latex:
+  latex_documents:
+    targetname: book.tex
+  latex_engine              : pdflatex
+  use_jupyterbook_latex     : true # use sphinx-jupyterbook-latex for pdf builds as default
+  
+  
+html:
+  favicon                   : ""  # A path to a favicon image
+  use_edit_page_button      : false  # Whether to add an "edit this page" button to pages. If `true`, repository information in repository: must be filled in
+  use_repository_button     : true  # Whether to add a link to your repository button
+  use_issues_button         : false  # ONLY ON GITHUB
+  use_multitoc_numbering    : true   # Continuous numbering across parts/chapters
+  extra_navbar              : Powered by <a href="https://jupyterbook.org">Jupyter Book</a>  # Will be displayed underneath the left navbar.
+  extra_footer              : ""  # Will be displayed underneath the footer.
+  google_analytics_id       : ""  # A GA id that can be used to track book views.
+  home_page_in_navbar       : true  # Whether to include your home page in the left Navigation Bar
+  baseurl                   : ""  # The base URL where your book will be hosted. Used for creating image previews and social links. e.g.: https://mypage.com/mybook/
+  comments:
+    hypothesis              : false
+    utterances              : false
+
+
+repository:
+  url                       : https://gitlab.com/geoocean/courses/optimization  # Online location of your book
+  path_to_book              : ""  # A path to your book's folder, relative to the repository root.
+  branch                    : main  # Which branch of the repository should be used when creating links (optional)
+
+#launch_buttons:
+  #notebook_interface: jupyterlab  # or "classic"
+  #use_binder_button: true 
+ # binderhub_url: https://mybinder.org/v2/gl/geoocean%2Fcourses%2Foptimization/main
+#  binder_repo_base: "https://gitlab.com/"
+  #binder_repo_org: "geoocean"
+  #binder_repo_name: "courses/optimization"
+  #binder_repo_branch: "main"
+  #thebe: true
+  
+launch_buttons:
+  notebook_interface        : jupyterlab  # The interface interactive links will activate ["classic", "jupyterlab"]
+  binderhub_url             : https://mybinder.org  # The URL of the BinderHub (e.g., https://mybinder.org)
+  jupyterhub_url            : ""  # The URL of the JupyterHub (e.g., https://datahub.berkeley.edu)
+  thebe                     : false  # Add a thebe button to pages (ONLY ON GITHUB)
+  colab_url                 : "" # The URL of Google Colab (https://colab.research.google.com)
+
+sphinx:
+  config:
+    mathjax_path: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+    

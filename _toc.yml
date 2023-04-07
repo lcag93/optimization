@@ -1,0 +1,38 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: book/intro.md
+parts:
+  - caption: T2. Linear Programming
+    chapters:
+    - file: notebooks/T2_linear_programming/01_linear_programming.ipynb
+    - file: notebooks/T2_linear_programming/02_transportation_problem.ipynb
+    - file: notebooks/T2_linear_programming/03a_Simplex_Method.ipynb
+    - file: notebooks/T2_linear_programming/03b_Simplex_Method.ipynb
+    - file: notebooks/T2_linear_programming/04_String_beam_system.ipynb
+    
+  - caption: T3.  Mized Integeer Linear Programming
+    chapters:
+    - file: notebooks/T3_mixed_integer_linear_programming/01_Knapsack_Problem.ipynb
+    - file: notebooks/T3_mixed_integer_linear_programming/02_The_travelling_salesman_problem.ipynb
+    
+  - caption: T4. Nonlinear Programming
+    chapters:
+    - file: notebooks/T4_nonlinear_programming/01_Sand_Transport.ipynb
+    - file: notebooks/T4_nonlinear_programming/02_Postal_package.ipynb
+    - file: notebooks/T4_nonlinear_programming/03_String_beam_system_Linear.ipynb
+    - file: notebooks/T4_nonlinear_programming/03_String_beam_system_NonLinear.ipynb
+    
+  - caption: T5. Heuristic Optimization
+    chapters:
+    - file: notebooks/T5_heuristic_optimization/SCE_Scipy_Example.ipynb
+
+  - caption: T6. Metamodels
+    chapters:
+    - file: notebooks/T6_metamodels/01a_Selection_MDA
+    - file: notebooks/T6_metamodels/01b_LHS_MDA.ipynb
+    - file: notebooks/T6_metamodels/01c_Clustering_KMeans.ipynb
+    - file: notebooks/T6_metamodels/02a_Reconstruction_Analogues.ipynb
+    - file: notebooks/T6_metamodels/02b_Reconstruction_RBF.ipynb
+
