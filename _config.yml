@@ -66,9 +66,9 @@ launch_buttons:
   colab_url                 : "" # The URL of Google Colab (https://colab.research.google.com)
 
 # Thebelab settings
-use_thebelab_button              : true  # If 'true', display a button to allow in-page running code cells with Thebelab
-thebelab_button_text             : "Thebelab"  # The text to display inside the Thebelab initialization button
-codemirror_theme                 : "abcdef"  # Theme for codemirror cells, for options see https://codemirror.net/doc/manual.html#config
+#use_thebelab_button              : true  # If 'true', display a button to allow in-page running code cells with Thebelab
+#thebelab_button_text             : "Thebelab"  # The text to display inside the Thebelab initialization button
+#codemirror_theme                 : "abcdef"  # Theme for codemirror cells, for options see https://codemirror.net/doc/manual.html#config
 
 # Binder link settings
 use_binder_button                : true  # If 'true', add a binder button for interactive links
