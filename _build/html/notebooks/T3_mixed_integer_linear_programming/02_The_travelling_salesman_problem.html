@@ -1,0 +1,1668 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>The Travelling Salesman &#8212; Optimization</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/T3_mixed_integer_linear_programming/02_The_travelling_salesman_problem';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Sand Transport" href="../T4_nonlinear_programming/01_Sand_Transport.html" />
+    <link rel="prev" title="The Knapsack problem" href="01_Knapsack_Problem.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../book/intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../book/intro.html">
+                    M2248 - Optimization in Civil Engineering
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">T2. Linear Programming</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T2_linear_programming/01_linear_programming.html">Linear Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T2_linear_programming/02_transportation_problem.html">Transportation problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T2_linear_programming/03a_Simplex_Method.html">SIMPLEX Method - Ex1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T2_linear_programming/03b_Simplex_Method.html">SIMPLEX Method - Ex2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T2_linear_programming/04_String_beam_system.html">String and beam system</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T3.  Mized Integeer Linear Programming</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01_Knapsack_Problem.html">The Knapsack problem</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">The Travelling Salesman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T4. Nonlinear Programming</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/01_Sand_Transport.html">Sand Transport</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/02_Postal_package.html">Postal Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/03_String_beam_system_Linear.html">String and beam system - Linear</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T4_nonlinear_programming/03_String_beam_system_NonLinear.html">String and beam system - NonLinear</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T5. Heuristic Optimization</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T5_heuristic_optimization/SCE_Scipy_Example.html">Heuristic optimization</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">T6. Metamodels</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../T6_metamodels/01a_Selection_MDA.html">Selection: MDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T6_metamodels/01b_LHS_MDA.html">Sampling LHS + Selection MDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T6_metamodels/01c_Clustering_KMeans.html">Clustering - KMeans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T6_metamodels/02a_Reconstruction_Analogues.html">Reconstruction - Analogues</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../T6_metamodels/02b_Reconstruction_RBF.html">Reconstruction: RBF</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/git/https%3A//gitlab.com/geoocean/courses/optimization/main?urlpath=lab/tree/notebooks/T3_mixed_integer_linear_programming/02_The_travelling_salesman_problem.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onBinder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+<a href="https://gitlab.com/geoocean/courses/optimization" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-gitlab"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/notebooks/T3_mixed_integer_linear_programming/02_The_travelling_salesman_problem.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>The Travelling Salesman</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For these examples we are going to use the library <a class="reference external" href="https://www.python-mip.com/">MIP</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">stdout</span> <span class="k">as</span> <span class="n">out</span>
+<span class="kn">from</span> <span class="nn">mip</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">xsum</span><span class="p">,</span> <span class="n">minimize</span><span class="p">,</span> <span class="n">BINARY</span>
+
+<span class="kn">import</span> <span class="nn">folium</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section class="tex2jax_ignore mathjax_ignore" id="the-travelling-salesman">
+<h1>The Travelling Salesman<a class="headerlink" href="#the-travelling-salesman" title="Permalink to this heading">#</a></h1>
+<p>Given a set of <span class="math notranslate nohighlight">\(n\)</span> cities <span class="math notranslate nohighlight">\(C = {1, 2, \ldots, n}\)</span> and a distance matrix <span class="math notranslate nohighlight">\(d_{i,j}\)</span> representing the distance between cities <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>, the TSP seeks to find the shortest Hamiltonian cycle (i.e., a cycle that visits each city exactly once) that starts and ends at a specified city (e.g., city 1).</p>
+<p>Let <span class="math notranslate nohighlight">\(x_{i,j}\)</span> be a binary variable that takes the value 1 if the TSP tour includes an edge from city <span class="math notranslate nohighlight">\(i\)</span> to city <span class="math notranslate nohighlight">\(j\)</span>, and 0 otherwise. Let <span class="math notranslate nohighlight">\(u_i\)</span> be a continuous variable that represents the position of city <span class="math notranslate nohighlight">\(i\)</span> in the Hamiltonian cycle.</p>
+<p>We can then formulate the TSP as the following MILP:</p>
+<div class="math notranslate nohighlight">
+\[
+\text{Minimize: } \sum_{i=1}^{n}\sum_{j=1}^{n} d_{i,j} x_{i,j}
+\]</div>
+<p>Subject to:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\sum_{j=1}^{n} x_{i,j} &amp;= 1 &amp;&amp; \forall i \in C \\
+\sum_{i=1}^{n} x_{i,j} &amp;= 1 &amp;&amp; \forall j \in C \\
+u_i - u_j + nx_{i,j} &amp;\leq n-1 &amp;&amp; \forall i,j \in C, i \neq 1, j \neq 1 \\
+2 \leq u_i &amp;\leq n &amp;&amp; \forall i \in C \\
+x_{i,j} &amp;\in \{0,1\} &amp;&amp; \forall i,j \in C \\
+\end{aligned}
+\end{split}\]</div>
+<p>The first constraint ensures that each city is visited exactly once. The second constraint ensures that the tour is a cycle that visits each city exactly once. The third constraint (known as the subtour elimination constraint) ensures that the tour is a Hamiltonian cycle by preventing the formation of subcycles. The fourth constraint ensures that the position variables are in the correct range. Finally, the fifth constraint ensures that the edge variables are binary.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cities</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Santander&quot;</span><span class="p">,</span> <span class="s2">&quot;Gijon&quot;</span><span class="p">,</span> <span class="s2">&quot;Madrid&quot;</span><span class="p">,</span> <span class="s2">&quot;Sevilla&quot;</span><span class="p">,</span> <span class="s2">&quot;Barcelona&quot;</span><span class="p">,</span> <span class="s2">&quot;Bilbao&quot;</span><span class="p">,</span> <span class="s2">&quot;Valencia&quot;</span><span class="p">,</span> <span class="s2">&quot;Vigo&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the coordinates for the cities</span>
+<span class="n">coordinates</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Santander&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">43.4623</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.8</span><span class="p">],</span>
+               <span class="s2">&quot;Gijon&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">43.5321</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.6644</span><span class="p">],</span>
+               <span class="s2">&quot;Madrid&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">40.4168</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.7038</span><span class="p">],</span>
+               <span class="s2">&quot;Sevilla&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">37.3891</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.9845</span><span class="p">],</span>
+               <span class="s2">&quot;Barcelona&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">41.3851</span><span class="p">,</span> <span class="mf">2.1734</span><span class="p">],</span>
+               <span class="s2">&quot;Bilbao&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">43.2630</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.9340</span><span class="p">],</span>
+               <span class="s2">&quot;Valencia&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">39.4699</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3763</span><span class="p">],</span>
+               <span class="s2">&quot;Vigo&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">42.2406</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.7207</span><span class="p">]}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the distances between the cities</span>
+<span class="n">distances</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">426</span><span class="p">,</span> <span class="mi">916</span><span class="p">,</span> <span class="mi">724</span><span class="p">,</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">605</span><span class="p">,</span> <span class="mi">435</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">204</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">429</span><span class="p">,</span> <span class="mi">980</span><span class="p">,</span> <span class="mi">944</span><span class="p">,</span> <span class="mi">174</span><span class="p">,</span> <span class="mi">690</span><span class="p">,</span> <span class="mi">348</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">426</span><span class="p">,</span> <span class="mi">429</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">536</span><span class="p">,</span> <span class="mi">620</span><span class="p">,</span> <span class="mi">394</span><span class="p">,</span> <span class="mi">353</span><span class="p">,</span> <span class="mi">824</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">916</span><span class="p">,</span> <span class="mi">980</span><span class="p">,</span> <span class="mi">536</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">995</span><span class="p">,</span> <span class="mi">1063</span><span class="p">,</span> <span class="mi">537</span><span class="p">,</span> <span class="mi">741</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">724</span><span class="p">,</span> <span class="mi">944</span><span class="p">,</span> <span class="mi">620</span><span class="p">,</span> <span class="mi">995</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">612</span><span class="p">,</span> <span class="mi">350</span><span class="p">,</span> <span class="mi">1133</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">111</span><span class="p">,</span> <span class="mi">174</span><span class="p">,</span> <span class="mi">394</span><span class="p">,</span> <span class="mi">1063</span><span class="p">,</span> <span class="mi">612</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">519</span><span class="p">,</span> <span class="mi">602</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">605</span><span class="p">,</span> <span class="mi">690</span><span class="p">,</span> <span class="mi">353</span><span class="p">,</span> <span class="mi">537</span><span class="p">,</span> <span class="mi">350</span><span class="p">,</span> <span class="mi">519</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">688</span><span class="p">],</span>
+             <span class="p">[</span><span class="mi">435</span><span class="p">,</span> <span class="mi">348</span><span class="p">,</span> <span class="mi">824</span><span class="p">,</span> <span class="mi">741</span><span class="p">,</span> <span class="mi">1133</span><span class="p">,</span> <span class="mi">602</span><span class="p">,</span> <span class="mi">688</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a map object centered at the geographic center of Spain</span>
+<span class="nb">map</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="p">[</span><span class="mf">40.4168</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.7038</span><span class="p">],</span> <span class="n">zoom_start</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+<span class="c1"># Add markers for each city to the map</span>
+<span class="k">for</span> <span class="n">city</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">folium</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">coords</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="n">city</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+
+<span class="c1"># Add lines between each pair of cities, with distance displayed as a popup</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cities</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cities</span><span class="p">)):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">cities</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">cities</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">folium</span><span class="o">.</span><span class="n">PolyLine</span><span class="p">(</span><span class="n">locations</span><span class="o">=</span><span class="p">[</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">],</span> <span class="n">tooltip</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">distance</span><span class="si">}</span><span class="s2"> km&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;plum&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+
+<span class="c1"># Display the map</span>
+<span class="nb">map</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><span style="color:#565656">Make this Notebook Trusted to load map: File -> Trust Notebook</span><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    
+    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+    
+        &lt;script&gt;
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        &lt;/script&gt;
+    
+    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
+    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://code.jquery.com/jquery-1.12.4.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
+    
+            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
+            &lt;style&gt;
+                #map_04f72660c296f700195f0fc37a826f9e {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            &lt;/style&gt;
+        
+&lt;/head&gt;
+&lt;body&gt;
+    
+    
+            &lt;div class=&quot;folium-map&quot; id=&quot;map_04f72660c296f700195f0fc37a826f9e&quot; &gt;&lt;/div&gt;
+        
+&lt;/body&gt;
+&lt;script&gt;
+    
+    
+            var map_04f72660c296f700195f0fc37a826f9e = L.map(
+                &quot;map_04f72660c296f700195f0fc37a826f9e&quot;,
+                {
+                    center: [40.4168, -3.7038],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 6,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_bf6e42b0369349a587357558fba98963 = L.tileLayer(
+                &quot;https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png&quot;,
+                {&quot;attribution&quot;: &quot;Data by \u0026copy; \u003ca target=\&quot;_blank\&quot; href=\&quot;http://openstreetmap.org\&quot;\u003eOpenStreetMap\u003c/a\u003e, under \u003ca target=\&quot;_blank\&quot; href=\&quot;http://www.openstreetmap.org/copyright\&quot;\u003eODbL\u003c/a\u003e.&quot;, &quot;detectRetina&quot;: false, &quot;maxNativeZoom&quot;: 18, &quot;maxZoom&quot;: 18, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            var marker_21853bb723aaf20c43aad1d2530b9bcb = L.marker(
+                [43.4623, -3.8],
+                {}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            marker_21853bb723aaf20c43aad1d2530b9bcb.bindTooltip(
+                `&lt;div&gt;
+                     Santander
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_530c9a7aae4f1ff3a0ea3ee612589dd4 = L.marker(
+                [43.5321, -5.6644],
+                {}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            marker_530c9a7aae4f1ff3a0ea3ee612589dd4.bindTooltip(
+                `&lt;div&gt;
+                     Gijon
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_8983646fcca12caacab85d35e69bc8ac = L.marker(
+                [40.4168, -3.7038],
+                {}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            marker_8983646fcca12caacab85d35e69bc8ac.bindTooltip(
+                `&lt;div&gt;
+                     Madrid
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_4cee96f82cc8662afb096473b1e79801 = L.marker(
+                [37.3891, -5.9845],
+                {}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            marker_4cee96f82cc8662afb096473b1e79801.bindTooltip(
+                `&lt;div&gt;
+                     Sevilla
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_541f9449d548a1be0731674c79c8d6f3 = L.marker(
+                [41.3851, 2.1734],
+                {}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            marker_541f9449d548a1be0731674c79c8d6f3.bindTooltip(
+                `&lt;div&gt;
+                     Barcelona
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_66f2b11f0a8fa396a75d6502aff34f44 = L.marker(
+                [43.263, -2.934],
+                {}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            marker_66f2b11f0a8fa396a75d6502aff34f44.bindTooltip(
+                `&lt;div&gt;
+                     Bilbao
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_8cd4b467a89634cab20419af726183b6 = L.marker(
+                [39.4699, -0.3763],
+                {}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            marker_8cd4b467a89634cab20419af726183b6.bindTooltip(
+                `&lt;div&gt;
+                     Valencia
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_53c0b2e143cc4e3d0f63f4fcf95e6c1b = L.marker(
+                [42.2406, -8.7207],
+                {}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            marker_53c0b2e143cc4e3d0f63f4fcf95e6c1b.bindTooltip(
+                `&lt;div&gt;
+                     Vigo
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_1fe6e07fbb14f0415597759be55c37d1 = L.polyline(
+                [[43.4623, -3.8], [43.5321, -5.6644]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_1fe6e07fbb14f0415597759be55c37d1.bindTooltip(
+                `&lt;div&gt;
+                     204 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_a45ae934896266683a807281ef67d470 = L.polyline(
+                [[43.4623, -3.8], [40.4168, -3.7038]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_a45ae934896266683a807281ef67d470.bindTooltip(
+                `&lt;div&gt;
+                     426 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_ef37e3197fc8f4e66e8369a42909ebec = L.polyline(
+                [[43.4623, -3.8], [37.3891, -5.9845]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_ef37e3197fc8f4e66e8369a42909ebec.bindTooltip(
+                `&lt;div&gt;
+                     916 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_3f9a9944f9116d6f7fc21ef8994efa74 = L.polyline(
+                [[43.4623, -3.8], [41.3851, 2.1734]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_3f9a9944f9116d6f7fc21ef8994efa74.bindTooltip(
+                `&lt;div&gt;
+                     724 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_891febc64589b0574516787362a6ca07 = L.polyline(
+                [[43.4623, -3.8], [43.263, -2.934]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_891febc64589b0574516787362a6ca07.bindTooltip(
+                `&lt;div&gt;
+                     111 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_71a43b6aab19b644a72efb2adc985fd2 = L.polyline(
+                [[43.4623, -3.8], [39.4699, -0.3763]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_71a43b6aab19b644a72efb2adc985fd2.bindTooltip(
+                `&lt;div&gt;
+                     605 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_d81201a33afd5ca080e1e9a2224d94d8 = L.polyline(
+                [[43.4623, -3.8], [42.2406, -8.7207]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_d81201a33afd5ca080e1e9a2224d94d8.bindTooltip(
+                `&lt;div&gt;
+                     435 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_5064a8ab853dcad343440dca1faed3eb = L.polyline(
+                [[43.5321, -5.6644], [40.4168, -3.7038]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_5064a8ab853dcad343440dca1faed3eb.bindTooltip(
+                `&lt;div&gt;
+                     429 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_d26a5efed51aa49518649260d12961ef = L.polyline(
+                [[43.5321, -5.6644], [37.3891, -5.9845]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_d26a5efed51aa49518649260d12961ef.bindTooltip(
+                `&lt;div&gt;
+                     980 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_4e8c1b573be6f59f3c2638b4680cdad7 = L.polyline(
+                [[43.5321, -5.6644], [41.3851, 2.1734]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_4e8c1b573be6f59f3c2638b4680cdad7.bindTooltip(
+                `&lt;div&gt;
+                     944 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_1a574dba58c1d4b780e708ba884e9f34 = L.polyline(
+                [[43.5321, -5.6644], [43.263, -2.934]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_1a574dba58c1d4b780e708ba884e9f34.bindTooltip(
+                `&lt;div&gt;
+                     174 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_03c98cd8fadb537c65b3d7650ec44c4c = L.polyline(
+                [[43.5321, -5.6644], [39.4699, -0.3763]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_03c98cd8fadb537c65b3d7650ec44c4c.bindTooltip(
+                `&lt;div&gt;
+                     690 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_5b5e3cdc9dfb772b792a9c56c0cdcdb0 = L.polyline(
+                [[43.5321, -5.6644], [42.2406, -8.7207]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_5b5e3cdc9dfb772b792a9c56c0cdcdb0.bindTooltip(
+                `&lt;div&gt;
+                     348 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_25ca2803ade01d3590da3a0433b55f5f = L.polyline(
+                [[40.4168, -3.7038], [37.3891, -5.9845]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_25ca2803ade01d3590da3a0433b55f5f.bindTooltip(
+                `&lt;div&gt;
+                     536 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_02c05085e29b02c5cc4bf60e73c0d508 = L.polyline(
+                [[40.4168, -3.7038], [41.3851, 2.1734]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_02c05085e29b02c5cc4bf60e73c0d508.bindTooltip(
+                `&lt;div&gt;
+                     620 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_48cf9fd6786f4c5040c9af54f4e76222 = L.polyline(
+                [[40.4168, -3.7038], [43.263, -2.934]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_48cf9fd6786f4c5040c9af54f4e76222.bindTooltip(
+                `&lt;div&gt;
+                     394 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_83f354d7bd0b9f9d3100bfd4a3895c73 = L.polyline(
+                [[40.4168, -3.7038], [39.4699, -0.3763]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_83f354d7bd0b9f9d3100bfd4a3895c73.bindTooltip(
+                `&lt;div&gt;
+                     353 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_9b2b9e3f9a64c565993062a9dd9cfe16 = L.polyline(
+                [[40.4168, -3.7038], [42.2406, -8.7207]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_9b2b9e3f9a64c565993062a9dd9cfe16.bindTooltip(
+                `&lt;div&gt;
+                     824 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_17778ac2826a5e05e0ce02100012f990 = L.polyline(
+                [[37.3891, -5.9845], [41.3851, 2.1734]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_17778ac2826a5e05e0ce02100012f990.bindTooltip(
+                `&lt;div&gt;
+                     995 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_5ff5103366bf8cd8f6469fe21d8c7648 = L.polyline(
+                [[37.3891, -5.9845], [43.263, -2.934]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_5ff5103366bf8cd8f6469fe21d8c7648.bindTooltip(
+                `&lt;div&gt;
+                     1063 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_c497f68312e70874769a2779a1290e83 = L.polyline(
+                [[37.3891, -5.9845], [39.4699, -0.3763]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_c497f68312e70874769a2779a1290e83.bindTooltip(
+                `&lt;div&gt;
+                     537 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_6768bbd44556a9a0c5f645f6a5190367 = L.polyline(
+                [[37.3891, -5.9845], [42.2406, -8.7207]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_6768bbd44556a9a0c5f645f6a5190367.bindTooltip(
+                `&lt;div&gt;
+                     741 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_88ed4b7cc49c7bf63554529390fbe5cb = L.polyline(
+                [[41.3851, 2.1734], [43.263, -2.934]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_88ed4b7cc49c7bf63554529390fbe5cb.bindTooltip(
+                `&lt;div&gt;
+                     612 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_067e201d5ae90facaa24f933cd6a4b60 = L.polyline(
+                [[41.3851, 2.1734], [39.4699, -0.3763]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_067e201d5ae90facaa24f933cd6a4b60.bindTooltip(
+                `&lt;div&gt;
+                     350 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_e44ab82bdcb8ce1c44494bfdaa3d37ff = L.polyline(
+                [[41.3851, 2.1734], [42.2406, -8.7207]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_e44ab82bdcb8ce1c44494bfdaa3d37ff.bindTooltip(
+                `&lt;div&gt;
+                     1133 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_15a07cc88c9ac5634490bc329b0b933b = L.polyline(
+                [[43.263, -2.934], [39.4699, -0.3763]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_15a07cc88c9ac5634490bc329b0b933b.bindTooltip(
+                `&lt;div&gt;
+                     519 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_ccfdaf559657a5dc1b7db19cbafc088a = L.polyline(
+                [[43.263, -2.934], [42.2406, -8.7207]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_ccfdaf559657a5dc1b7db19cbafc088a.bindTooltip(
+                `&lt;div&gt;
+                     602 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_3d23359ec331c3beae0987d00e1374a2 = L.polyline(
+                [[39.4699, -0.3763], [42.2406, -8.7207]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;plum&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;plum&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_04f72660c296f700195f0fc37a826f9e);
+        
+    
+            poly_line_3d23359ec331c3beae0987d00e1374a2.bindTooltip(
+                `&lt;div&gt;
+                     688 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+&lt;/script&gt;
+&lt;/html&gt;" style="position:absolute;width:100%;height:100%;left:0;top:0;border:none !important;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe></div></div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dists</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">p</span><span class="o">=</span><span class="mi">1</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">distances</span><span class="p">)[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="n">dists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distances</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">p</span><span class="p">:])</span>
+    <span class="n">p</span><span class="o">+=</span><span class="mi">1</span>
+<span class="n">dists</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[204, 426, 916, 724, 111, 605, 435],
+ [429, 980, 944, 174, 690, 348],
+ [536, 620, 394, 353, 824],
+ [995, 1063, 537, 741],
+ [612, 350, 1133],
+ [519, 602],
+ [688],
+ []]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># number of nodes and list of vertices</span>
+<span class="n">n</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dists</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dists</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Model name:</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">name_model</span> <span class="o">=</span> <span class="s1">&#39;Salesman&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We initialize the problem using the <strong>Model</strong> function from <strong>MIP</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">name_model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># distances matrix</span>
+<span class="n">c</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span>
+      <span class="k">else</span> <span class="n">dists</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="n">i</span>
+      <span class="k">else</span> <span class="n">dists</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="o">-</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+      <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">V</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">V</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We add the different iterms to the problem</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># binary variables indicating if arc (i,j) is used on the route or not</span>
+<span class="n">x</span> <span class="o">=</span> <span class="p">[[</span><span class="n">model</span><span class="o">.</span><span class="n">add_var</span><span class="p">(</span><span class="n">var_type</span><span class="o">=</span><span class="n">BINARY</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">V</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">V</span><span class="p">]</span>
+
+<span class="c1"># continuous variable to prevent subtours: each city will have a</span>
+<span class="c1"># different sequential id in the planned route except the first one</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">add_var</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">V</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We give the model with the objective function to minimize</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># objective function: minimize the distance</span>
+<span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">xsum</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">V</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">V</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We define the constraints</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># constraint : leave each city only once</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">V</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">+=</span> <span class="n">xsum</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">V</span> <span class="o">-</span> <span class="p">{</span><span class="n">i</span><span class="p">})</span> <span class="o">==</span> <span class="mi">1</span>
+
+<span class="c1"># constraint : enter each city only once</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">V</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">+=</span> <span class="n">xsum</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">V</span> <span class="o">-</span> <span class="p">{</span><span class="n">i</span><span class="p">})</span> <span class="o">==</span> <span class="mi">1</span>
+
+<span class="c1"># subtour elimination</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">V</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">},</span> <span class="n">V</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">}):</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">+=</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">-</span><span class="n">n</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>We optimize the model</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># optimizing</span>
+<span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Welcome to the CBC MILP Solver 
+Version: Trunk
+Build Date: Oct 28 2021 
+
+Starting solution of the Linear programming relaxation problem using Primal Simplex
+
+Coin0506I Presolve 58 (0) rows, 63 (-9) columns and 238 (0) elements
+Clp1000I sum of infeasibilities 3.45773e-05 - average 5.9616e-07, 37 fixed columns
+Coin0506I Presolve 42 (-16) rows, 11 (-52) columns and 96 (-142) elements
+Clp0029I End of values pass after 11 iterations
+Clp0000I Optimal - objective value 2783.5556
+Clp0000I Optimal - objective value 2783.5556
+Coin0511I After Postsolve, objective 2783.5556, infeasibilities - dual 0 (0), primal 0 (0)
+Clp0014I Perturbing problem by 0.001% of 0.95238197 - largest nonzero change 2.1344061e-05 ( 0.0011299797%) - largest zero change 1.7990915e-05
+Clp0000I Optimal - objective value 2783.5556
+Clp0000I Optimal - objective value 2783.5556
+Clp0000I Optimal - objective value 2783.5556
+Coin0511I After Postsolve, objective 2783.5556, infeasibilities - dual 0 (0), primal 0 (0)
+Clp0032I Optimal objective 2783.555556 - 0 iterations time 0.012, Presolve 0.00, Idiot 0.01
+
+Starting MIP optimization
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;OptimizationStatus.OPTIMAL: 0&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Extract results</strong></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># checking if a solution was found</span>
+<span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">num_solutions</span><span class="p">:</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;route with total distance </span><span class="si">%g</span><span class="s1"> found: </span><span class="si">%s</span><span class="s1">&#39;</span>
+              <span class="o">%</span> <span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">objective_value</span><span class="p">,</span> <span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">optimal_route</span><span class="p">,</span> <span class="n">optimal_id</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="n">nc</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">nc</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">V</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="n">nc</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="mf">0.99</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; -&gt; </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">cities</span><span class="p">[</span><span class="n">nc</span><span class="p">])</span>
+        <span class="n">optimal_route</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cities</span><span class="p">[</span><span class="n">nc</span><span class="p">])</span>
+        <span class="n">optimal_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>route with total distance 3255 found: Santander -&gt; Bilbao -&gt; Barcelona -&gt; Valencia -&gt; Madrid -&gt; Sevilla -&gt; Vigo -&gt; Gijon -&gt; Santander
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimal_route</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cities</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">optimal_route</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a map object centered at the geographic center of Spain</span>
+<span class="nb">map</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="p">[</span><span class="mf">40.4168</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.7038</span><span class="p">],</span> <span class="n">zoom_start</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+<span class="c1"># Add markers for each city to the map</span>
+<span class="k">for</span> <span class="n">city</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">folium</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">coords</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="n">city</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+
+<span class="c1"># Add lines between each pair of cities, with distance displayed as a popup</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">optimal_route</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">optimal_route</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">optimal_route</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">distances</span><span class="p">[</span><span class="n">cities</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">optimal_route</span><span class="p">[</span><span class="n">i</span><span class="p">])][</span><span class="n">cities</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">optimal_route</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])]</span>
+    <span class="n">folium</span><span class="o">.</span><span class="n">PolyLine</span><span class="p">(</span><span class="n">locations</span><span class="o">=</span><span class="p">[</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">],</span> <span class="n">tooltip</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">distance</span><span class="si">}</span><span class="s2"> km&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+
+<span class="c1"># Add a layer to the map to show the optimal route</span>
+<span class="n">folium</span><span class="o">.</span><span class="n">PolyLine</span><span class="p">(</span><span class="n">locations</span><span class="o">=</span><span class="p">[</span><span class="n">coordinates</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">optimal_route</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;darkmagenta&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+
+<span class="c1"># Display the map</span>
+<span class="nb">map</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div style="width:100%;"><div style="position:relative;width:100%;height:0;padding-bottom:60%;"><span style="color:#565656">Make this Notebook Trusted to load map: File -> Trust Notebook</span><iframe srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    
+    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+    
+        &lt;script&gt;
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        &lt;/script&gt;
+    
+    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
+    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://code.jquery.com/jquery-1.12.4.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
+    
+            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
+            &lt;style&gt;
+                #map_45bb897bfe9a23e03ef52da2c10e1edc {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            &lt;/style&gt;
+        
+&lt;/head&gt;
+&lt;body&gt;
+    
+    
+            &lt;div class=&quot;folium-map&quot; id=&quot;map_45bb897bfe9a23e03ef52da2c10e1edc&quot; &gt;&lt;/div&gt;
+        
+&lt;/body&gt;
+&lt;script&gt;
+    
+    
+            var map_45bb897bfe9a23e03ef52da2c10e1edc = L.map(
+                &quot;map_45bb897bfe9a23e03ef52da2c10e1edc&quot;,
+                {
+                    center: [40.4168, -3.7038],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 6,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_df1fbf6bf8ded6e0d89f5c37a98d9c40 = L.tileLayer(
+                &quot;https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png&quot;,
+                {&quot;attribution&quot;: &quot;Data by \u0026copy; \u003ca target=\&quot;_blank\&quot; href=\&quot;http://openstreetmap.org\&quot;\u003eOpenStreetMap\u003c/a\u003e, under \u003ca target=\&quot;_blank\&quot; href=\&quot;http://www.openstreetmap.org/copyright\&quot;\u003eODbL\u003c/a\u003e.&quot;, &quot;detectRetina&quot;: false, &quot;maxNativeZoom&quot;: 18, &quot;maxZoom&quot;: 18, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            var marker_b2864ca1061e05351d9234277b5f19a1 = L.marker(
+                [43.4623, -3.8],
+                {}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            marker_b2864ca1061e05351d9234277b5f19a1.bindTooltip(
+                `&lt;div&gt;
+                     Santander
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_2d7e8c8430ca3d863397ea44e1d7e3e5 = L.marker(
+                [43.5321, -5.6644],
+                {}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            marker_2d7e8c8430ca3d863397ea44e1d7e3e5.bindTooltip(
+                `&lt;div&gt;
+                     Gijon
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_00042d76866b2760053715a56d56ae98 = L.marker(
+                [40.4168, -3.7038],
+                {}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            marker_00042d76866b2760053715a56d56ae98.bindTooltip(
+                `&lt;div&gt;
+                     Madrid
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_ab8e4fbdc7dd7a67571af305c6d88e9c = L.marker(
+                [37.3891, -5.9845],
+                {}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            marker_ab8e4fbdc7dd7a67571af305c6d88e9c.bindTooltip(
+                `&lt;div&gt;
+                     Sevilla
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_50c2b0ada1fccb439e6fcd80b7da9c59 = L.marker(
+                [41.3851, 2.1734],
+                {}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            marker_50c2b0ada1fccb439e6fcd80b7da9c59.bindTooltip(
+                `&lt;div&gt;
+                     Barcelona
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_df8f2fb0af4a3d44212498d55191cb20 = L.marker(
+                [43.263, -2.934],
+                {}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            marker_df8f2fb0af4a3d44212498d55191cb20.bindTooltip(
+                `&lt;div&gt;
+                     Bilbao
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_8ad42d5e52584f7743bf2adc42dcc2b5 = L.marker(
+                [39.4699, -0.3763],
+                {}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            marker_8ad42d5e52584f7743bf2adc42dcc2b5.bindTooltip(
+                `&lt;div&gt;
+                     Valencia
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var marker_9f1a8cc5777958c61e56599e826ada3d = L.marker(
+                [42.2406, -8.7207],
+                {}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            marker_9f1a8cc5777958c61e56599e826ada3d.bindTooltip(
+                `&lt;div&gt;
+                     Vigo
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_60377b294bf8c4d9a3de4078be61cafa = L.polyline(
+                [[43.4623, -3.8], [43.263, -2.934]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            poly_line_60377b294bf8c4d9a3de4078be61cafa.bindTooltip(
+                `&lt;div&gt;
+                     111 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_fc200e1b59ca79199f2fc8618e22ff59 = L.polyline(
+                [[43.263, -2.934], [41.3851, 2.1734]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            poly_line_fc200e1b59ca79199f2fc8618e22ff59.bindTooltip(
+                `&lt;div&gt;
+                     612 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_d1ca297ee0d6d0db22ea9e9ca63731d7 = L.polyline(
+                [[41.3851, 2.1734], [39.4699, -0.3763]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            poly_line_d1ca297ee0d6d0db22ea9e9ca63731d7.bindTooltip(
+                `&lt;div&gt;
+                     350 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_b18da76cf39e994f92d3cd0923c35684 = L.polyline(
+                [[39.4699, -0.3763], [40.4168, -3.7038]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            poly_line_b18da76cf39e994f92d3cd0923c35684.bindTooltip(
+                `&lt;div&gt;
+                     353 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_8cbc4b9a3cc1746ff7aeb8ee0da27043 = L.polyline(
+                [[40.4168, -3.7038], [37.3891, -5.9845]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            poly_line_8cbc4b9a3cc1746ff7aeb8ee0da27043.bindTooltip(
+                `&lt;div&gt;
+                     536 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_3763d1ed8174cf8c7cde7cfc39e22ed3 = L.polyline(
+                [[37.3891, -5.9845], [42.2406, -8.7207]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            poly_line_3763d1ed8174cf8c7cde7cfc39e22ed3.bindTooltip(
+                `&lt;div&gt;
+                     741 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_88f1e308a7c62ee1e1e1606c7089ae8f = L.polyline(
+                [[42.2406, -8.7207], [43.5321, -5.6644]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            poly_line_88f1e308a7c62ee1e1e1606c7089ae8f.bindTooltip(
+                `&lt;div&gt;
+                     348 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_4a169823dd3c9bb772982244c3628e50 = L.polyline(
+                [[43.5321, -5.6644], [43.4623, -3.8]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;#3388ff&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;#3388ff&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 3}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+    
+            poly_line_4a169823dd3c9bb772982244c3628e50.bindTooltip(
+                `&lt;div&gt;
+                     204 km
+                 &lt;/div&gt;`,
+                {&quot;sticky&quot;: true}
+            );
+        
+    
+            var poly_line_db8e95be0ed46a5502c194ef5b6d66a3 = L.polyline(
+                [[43.4623, -3.8], [43.263, -2.934], [41.3851, 2.1734], [39.4699, -0.3763], [40.4168, -3.7038], [37.3891, -5.9845], [42.2406, -8.7207], [43.5321, -5.6644], [43.4623, -3.8]],
+                {&quot;bubblingMouseEvents&quot;: true, &quot;color&quot;: &quot;darkmagenta&quot;, &quot;dashArray&quot;: null, &quot;dashOffset&quot;: null, &quot;fill&quot;: false, &quot;fillColor&quot;: &quot;darkmagenta&quot;, &quot;fillOpacity&quot;: 0.2, &quot;fillRule&quot;: &quot;evenodd&quot;, &quot;lineCap&quot;: &quot;round&quot;, &quot;lineJoin&quot;: &quot;round&quot;, &quot;noClip&quot;: false, &quot;opacity&quot;: 1.0, &quot;smoothFactor&quot;: 1.0, &quot;stroke&quot;: true, &quot;weight&quot;: 5}
+            ).addTo(map_45bb897bfe9a23e03ef52da2c10e1edc);
+        
+&lt;/script&gt;
+&lt;/html&gt;" style="position:absolute;width:100%;height:100%;left:0;top:0;border:none !important;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe></div></div></div></div>
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks/T3_mixed_integer_linear_programming"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="01_Knapsack_Problem.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">The Knapsack problem</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../T4_nonlinear_programming/01_Sand_Transport.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Sand Transport</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By GeoOcean Group, Universidad de Cantabria
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
