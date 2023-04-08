@@ -12,7 +12,7 @@ parts:
     - file: notebooks/T2_linear_programming/03b_Simplex_Method.ipynb
     - file: notebooks/T2_linear_programming/04_String_beam_system.ipynb
     
-  - caption: T3.  Mized Integeer Linear Programming
+  - caption: T3.  Mixed Integeer Linear Programming
     chapters:
     - file: notebooks/T3_mixed_integer_linear_programming/01_Knapsack_Problem.ipynb
     - file: notebooks/T3_mixed_integer_linear_programming/02_The_travelling_salesman_problem.ipynb
