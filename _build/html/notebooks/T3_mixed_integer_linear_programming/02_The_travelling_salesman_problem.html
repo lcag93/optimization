@@ -433,7 +433,9 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <div class="cell docutils container">
+  <section class="tex2jax_ignore mathjax_ignore" id="the-travelling-salesman">
+<span id="launch-thebe"></span><h1>The Travelling Salesman<a class="headerlink" href="#the-travelling-salesman" title="Permalink to this heading">#</a></h1>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
@@ -455,8 +457,6 @@ document.write(`
 </div>
 </div>
 </div>
-<section class="tex2jax_ignore mathjax_ignore" id="the-travelling-salesman">
-<h1>The Travelling Salesman<a class="headerlink" href="#the-travelling-salesman" title="Permalink to this heading">#</a></h1>
 <p>Given a set of <span class="math notranslate nohighlight">\(n\)</span> cities <span class="math notranslate nohighlight">\(C = {1, 2, \ldots, n}\)</span> and a distance matrix <span class="math notranslate nohighlight">\(d_{i,j}\)</span> representing the distance between cities <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>, the TSP seeks to find the shortest Hamiltonian cycle (i.e., a cycle that visits each city exactly once) that starts and ends at a specified city (e.g., city 1).</p>
 <p>Let <span class="math notranslate nohighlight">\(x_{i,j}\)</span> be a binary variable that takes the value 1 if the TSP tour includes an edge from city <span class="math notranslate nohighlight">\(i\)</span> to city <span class="math notranslate nohighlight">\(j\)</span>, and 0 otherwise. Let <span class="math notranslate nohighlight">\(u_i\)</span> be a continuous variable that represents the position of city <span class="math notranslate nohighlight">\(i\)</span> in the Hamiltonian cycle.</p>
 <p>We can then formulate the TSP as the following MILP:</p>

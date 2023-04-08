@@ -433,7 +433,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <div class="cell docutils container">
+  <section class="tex2jax_ignore mathjax_ignore" id="linear-programming">
+<span id="launch-thebe"></span><h1>Linear Programming<a class="headerlink" href="#linear-programming" title="Permalink to this heading">#</a></h1>
+<p>click the <span class="fa fa-rocket"></span> –&gt; <span class="guilabel">Live Code</span> button above on this page, and run the code below.</p>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
@@ -450,8 +453,6 @@ document.write(`
 </div>
 <p>We are going to use the funcion <em><strong><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.linprog.html">linprog</a></strong></em> from the scipy library <br>
 The constraints of this library are that it can online <strong>minimize</strong> a function and that the inequalities need to be given as <strong><span class="math notranslate nohighlight">\(\leq\)</span></strong></p>
-<section class="tex2jax_ignore mathjax_ignore" id="linear-programming">
-<h1>Linear Programming<a class="headerlink" href="#linear-programming" title="Permalink to this heading">#</a></h1>
 <p><strong>Maximize:</strong></p>
 <div class="math notranslate nohighlight">
 \[z = x+2y\]</div>
