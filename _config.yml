@@ -20,7 +20,6 @@ latex:
   
 html:
   favicon                   : ""  # A path to a favicon image
-  home_page_in_navbar: false
   use_edit_page_button      : false  # Whether to add an "edit this page" button to pages. If `true`, repository information in repository: must be filled in
   use_repository_button     : true  # Whether to add a link to your repository button
   use_issues_button         : true  # ONLY ON GITHUB
@@ -29,9 +28,9 @@ html:
   extra_footer              : ""  # Will be displayed underneath the footer.
   google_analytics_id       : ""  # A GA id that can be used to track book views.
   home_page_in_navbar       : true  # Whether to include your home page in the left Navigation Bar
-  baseurl                   : https://lcag93.github.io/optimization/
+  baseurl                   : ""  # The base URL where your book will be hosted. Used for creating image previews and social links. e.g.: https://mypage.com/mybook/
   comments:
-    hypothesis : false
+    hypothesis              : false
     utterances              : false
 
 
@@ -58,10 +57,13 @@ use_download_button              : true  # If 'true', display a button to downlo
 download_button_text             : "Download" # The text that download buttons will contain
 download_page_header             : "Made with Jupyter Book" # A header that will be displayed at the top of and PDF-printed page
 
+
 launch_buttons:
-  notebook_interface: "jupyterlab" # The interface interactive links will activate ["classic", "jupyterlab"]
-  binderhub_url: "https://mybinder.org"
-  thebe: true
+  notebook_interface        : jupyterlab  # The interface interactive links will activate ["classic", "jupyterlab"]
+  binderhub_url             : https://mybinder.org  # The URL of the BinderHub (e.g., https://mybinder.org)
+  jupyterhub_url            : ""  # The URL of the JupyterHub (e.g., https://datahub.berkeley.edu)
+  thebe                     : true  # Add a thebe button to pages (ONLY ON GITHUB)
+  colab_url                 : "" # The URL of Google Colab (https://colab.research.google.com)
 
 # Thebelab settings
 #use_thebelab_button              : true  # If 'true', display a button to allow in-page running code cells with Thebelab
@@ -150,4 +152,3 @@ sphinx:
       content-types/restructuredtext.md: file-types/restructuredtext.md
       customize/toc.md: structure/toc.md
     sd_fontawesome_latex: True
-    
