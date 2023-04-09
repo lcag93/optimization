@@ -5,7 +5,7 @@ title: Optimization
 author: GeoOcean Group, Universidad de Cantabria
 logo: book/logo.png
 
-only_build_toc_files: True  # exclude all files not in toc
+only_build_toc_files: True  # exclude all files not in toc
 
 execute:
   execute_notebooks: 'off' 

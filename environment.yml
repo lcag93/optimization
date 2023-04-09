@@ -11,4 +11,5 @@ dependencies:
   - pip:
     - mip
     - cffi
+    - folium
 prefix: /Users/laurac/opt/anaconda3/envs/optimization
